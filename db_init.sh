@@ -1,1 +1,1 @@
-/etc/init.d/mysql -uroot -e "create database stepic_web;"
+mysql -uroot -e "create database stepic_web;"
