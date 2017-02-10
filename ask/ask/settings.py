@@ -10,6 +10,9 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
+from local_settings import *
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -23,6 +26,10 @@ SECRET_KEY = 'vy1bbm1u55n0++1n=@idtl4c3ybmyx34h-(&o8=zqh%e7ma_3='
 DEBUG = True
 
 TEMPLATE_DEBUG = True
+
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'templates'),
+)
 
 ALLOWED_HOSTS = []
 
@@ -56,16 +63,7 @@ WSGI_APPLICATION = 'ask.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'stepic_web',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-    }
-}
+#from local_settings import *
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/

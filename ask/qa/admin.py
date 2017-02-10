@@ -3,7 +3,7 @@ from models import Question, Answer
 
 
 class EntryAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'added_at', 'author', 'short_text')
+    list_display = ('__str__', 'added_at', 'author', 'short_text', 'active')
 
     def short_text(self, obj):
         return obj.text[:80]
@@ -15,6 +15,7 @@ class EntryAdmin(admin.ModelAdmin):
 class QuestionAdmin(EntryAdmin):
     list_display = list(EntryAdmin.list_display)
     list_display.insert(list_display.index('short_text'), 'short_title')
+    list_display.append('rating')
 
 
 class AnswerAdmin(EntryAdmin):
