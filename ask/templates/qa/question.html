@@ -1,0 +1,14 @@
+{% extends 'qa/base.html' %}
+{% block title %}
+    {{ question.title }}
+{% endblock %}
+{% block content %}
+    <div>{{ question.text }}</div>
+    {% if answers %}
+            {% for answer in answers %}
+                <div>{{ answer.text }}</div>
+            {% endfor %}
+    {% else %}
+        No answers available.
+    {% endif %}
+{% endblock %}

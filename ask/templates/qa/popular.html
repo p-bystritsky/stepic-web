@@ -1,0 +1,21 @@
+{% extends 'qa/base.html' %}
+{% block title %}
+    The most popular questions
+{% endblock %}
+{% block content %}
+    {% if questions %}
+        Popular questions:
+        <ul>
+            {% for question in questions %}
+                <li><a href="{{ question.get_url }}">{{ question.title }}</a></li>
+            {% endfor %}
+        </ul>
+        <div>
+        {% for pagination_page in paginator.page_range %}
+            <a href="{{ paginator.baseurl }}{{ pagination_page }}">{{ pagination_page }}</a>
+        {% endfor %}
+        </div>
+    {% else %}
+        Sorry, no questions available!
+    {% endif %}
+{% endblock %}
