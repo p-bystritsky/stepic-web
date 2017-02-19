@@ -1,10 +1,14 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.http import Http404
-from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
 
+from .forms import AskForm, AnswerForm
 from models import Question, Answer
 
 DEFAULT_PAGE_VALUE = 1
@@ -44,17 +48,37 @@ def popular(request):
     return base(request, 'popular')
 
 
-@require_GET
-def question(request, q_id):
-    question_obj = get_object_or_404(Question, id=q_id)
-    if not question_obj.active:
+@login_required
+def view_question(request, q_id):
+    question = get_object_or_404(Question, id=q_id)
+    if not question.active:
         raise Http404()
-    answers = Answer.objects.filter(question=question_obj)
+    if request.method == 'POST':
+        form = AnswerForm(q_id, request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(question.get_url())
+    else:
+        form = AnswerForm(q_id, request.user)
+    answers = Answer.objects.filter(question=question)
     context = {
-        'question': question_obj,
-        'answers': answers
+        'question': question,
+        'answers': answers,
+        'form': form
     }
     return render(request, 'qa/question.html', context)
+
+
+@login_required
+def ask(request):
+    if request.method == 'POST':
+        form = AskForm(request.user, request.POST)
+        if form.is_valid():
+            question = form.save()
+            return HttpResponseRedirect(question.get_url())
+    else:
+        form = AskForm(request.user)
+    return render(request, 'qa/ask.html', {'form': form})
 
 
 def test(request, *args, **kwargs):

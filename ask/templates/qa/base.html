@@ -5,7 +5,15 @@
     <title>{% block title %}Generic Title{% endblock %}</title>
 </head>
 <body>
-<div>{% block header %}Generic Header{% endblock %}</div>
+
+<div>
+    {% block header %}
+        <ul class="navigation">
+            <li><a href="{% url 'qa:main' %}">Return to main</a></li>
+            <li><a href="{% url 'qa:ask' %}">Ask a new question</a></li>
+        </ul>
+    {% endblock %}
+</div>
 <div>{% block content %}Generic Content{% endblock %}</div>
 <div>{% block footer %}Generic Footer{% endblock %}</div>
 </body>

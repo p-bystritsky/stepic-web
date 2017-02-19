@@ -1,8 +1,10 @@
+from datetime import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
-from datetime import datetime
+from .local_settings import *
 
 
 class QuestionManager(models.Manager):
@@ -31,9 +33,10 @@ class Entry(models.Model):
 
 
 class Question(Entry):
-    author = models.ForeignKey(User)
     objects = QuestionManager()
-    title = models.CharField(max_length=255)
+
+    author = models.ForeignKey(User)
+    title = models.CharField(max_length=TITLE_MAX_LENGTH)
     rating = models.IntegerField(default=0)
     likes = models.ManyToManyField(User, blank=True, null=True, related_name='likes_user')
 
