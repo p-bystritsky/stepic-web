@@ -17,7 +17,7 @@ class QuestionManager(models.Manager):
         return result.order_by(param)
 
     def new(self):
-        return self.__get_by('added_at', reverse=True)
+        return self.__get_by('pk', reverse=True)
 
     def popular(self):
         return self.__get_by('rating', reverse=True)
@@ -25,7 +25,7 @@ class QuestionManager(models.Manager):
 
 class Entry(models.Model):
     text = models.TextField()
-    added_at = models.DateField(default=datetime.now)
+    added_at = models.DateTimeField(default=datetime.now)
     active = models.BooleanField(default=True)
 
     class Meta:
