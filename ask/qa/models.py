@@ -25,7 +25,8 @@ class QuestionManager(models.Manager):
 
 class Entry(models.Model):
     text = models.TextField()
-    added_at = models.DateTimeField(default=datetime.now)
+    #TODO: change to DateTime
+    added_at = models.DateField(default=datetime.now)
     active = models.BooleanField(default=True)
 
     class Meta:
