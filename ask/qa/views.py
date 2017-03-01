@@ -48,18 +48,20 @@ def popular(request):
     return base(request, 'popular')
 
 
-@login_required
+# @login_required
 def view_question(request, q_id):
     question = get_object_or_404(Question, id=q_id)
     if not question.active:
         raise Http404()
     if request.method == 'POST':
-        form = AnswerForm(q_id, request.user, request.POST)
+        #form = AnswerForm(q_id, request.user, request.POST)
+        form = AnswerForm(q_id, request.POST)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(question.get_url())
     else:
-        form = AnswerForm(q_id, request.user)
+        #form = AnswerForm(q_id, request.user)
+        form = AnswerForm(q_id)
     answers = Answer.objects.filter(question=question)
     context = {
         'question': question,
@@ -69,15 +71,17 @@ def view_question(request, q_id):
     return render(request, 'qa/question.html', context)
 
 
-@login_required
+# @login_required
 def ask(request):
     if request.method == 'POST':
-        form = AskForm(request.user, request.POST)
+        #form = AskForm(request.user, request.POST)
+        form = AskForm(request.POST)
         if form.is_valid():
             question = form.save()
             return HttpResponseRedirect(question.get_url())
     else:
-        form = AskForm(request.user)
+        #form = AskForm(request.user)
+        form = AskForm()
     return render(request, 'qa/ask.html', {'form': form})
 
 

@@ -36,7 +36,7 @@ class Entry(models.Model):
 class Question(Entry):
     objects = QuestionManager()
 
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, blank=True, null=True)
     title = models.CharField(max_length=TITLE_MAX_LENGTH)
     rating = models.IntegerField(default=0)
     likes = models.ManyToManyField(User, blank=True, null=True, related_name='likes_user')
@@ -49,7 +49,7 @@ class Question(Entry):
 
 
 class Answer(Entry):
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, blank=True, null=True)
     question = models.ForeignKey(Question)
 
     def __str__(self):
