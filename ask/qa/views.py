@@ -7,12 +7,15 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as login_user, logout as logout_user
 
-from .forms import AskForm, AnswerForm
+from .forms import AskForm, AnswerForm, LoginForm, SignUpForm
 from models import Question, Answer
 
 DEFAULT_PAGE_VALUE = 1
 DEFAULT_LIMIT_VALUE = 10
+INVALID_AUTH_MESSAGE = 'Invalid login or password'
 
 
 @require_GET
@@ -54,13 +57,13 @@ def view_question(request, q_id):
     if not question.active:
         raise Http404()
     if request.method == 'POST':
-        #form = AnswerForm(q_id, request.user, request.POST)
+        # form = AnswerForm(q_id, request.user, request.POST)
         form = AnswerForm(q_id, request.POST)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(question.get_url())
     else:
-        #form = AnswerForm(q_id, request.user)
+        # form = AnswerForm(q_id, request.user)
         form = AnswerForm(q_id)
     answers = Answer.objects.filter(question=question)
     context = {
@@ -74,15 +77,53 @@ def view_question(request, q_id):
 # @login_required
 def ask(request):
     if request.method == 'POST':
-        #form = AskForm(request.user, request.POST)
+        # form = AskForm(request.user, request.POST)
         form = AskForm(request.POST)
         if form.is_valid():
             question = form.save()
             return HttpResponseRedirect(question.get_url())
     else:
-        #form = AskForm(request.user)
+        # form = AskForm(request.user)
         form = AskForm()
     return render(request, 'qa/ask.html', {'form': form})
+
+
+def login(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = authenticate(
+                username=request.POST.get('username', None),
+                password=request.POST.get('password', None),
+            )
+            if user is not None:
+                login_user(request, user)
+                next_page = request.GET.get('next', '/')
+                return HttpResponseRedirect(next_page)
+        form.add_error(None, INVALID_AUTH_MESSAGE)
+    else:
+        form = LoginForm()
+    return render(request, 'qa/login.html', {'form': form})
+
+
+@login_required
+def logout(request):
+    logout_user(request)
+    next_page = request.GET.get('next', '/')
+    return HttpResponseRedirect(next_page)
+
+
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login_user(request, user)
+            next_page = request.GET.get('next', '/')
+            return HttpResponseRedirect(next_page)
+    else:
+        form = SignUpForm()
+    return render(request, 'qa/login.html', {'form': form})
 
 
 def test(request, *args, **kwargs):

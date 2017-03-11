@@ -5,7 +5,13 @@
     <title>{% block title %}Generic Title{% endblock %}</title>
 </head>
 <body>
-
+<div>
+    {% if request.user.is_authenticated %}
+        You are logged as {{ request.user.username }} (<a href="{% url 'qa:logout' %}?next={{ request.path }}">logout</a>)
+    {% else %}
+        Please, <a href="{% url 'qa:login' %}">login</a> or <a href="{% url 'qa:signup' %}">sign up</a>
+    {% endif %}
+</div>
 <div>
     {% block header %}
         <ul class="navigation">
